@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import httpRequest from "../../api";
+import swal from 'sweetalert2';
 
 const initialState = {
     fullName: "",
@@ -10,7 +11,7 @@ const initialState = {
 export default function Register() {
 
     const [{ fullName, email, password }, setState] = useState(initialState);
-    const [error, setError] = useState({ active: false, message: "" })
+    //const [error, setError] = useState({ active: false, message: "" })
 
     const onChange = (event) => {
         const { name, value } = event.target;
@@ -36,9 +37,18 @@ export default function Register() {
                 config
             )
             .then((response) => {
-                setError({ active: true, message: response.data.message })
+                swal.fire({
+                    icon: "success",
+                    title: "YAY!",
+                    text: "Successfully Registered",
+                })
+                //setError({ active: true, message: response.data.message })
             }).catch((error) => {
-                setError({ active: false, message: error.data.message })
+                swal.fire({
+                    icon: "warning",
+                    title: "Oops...",
+                    text: error.data.message,
+                })
             });
 
         clearState();
@@ -83,10 +93,6 @@ export default function Register() {
       focus:bg-white focus:outline-none"
                     required
                 />
-            </div>
-
-            <div className={`${error.active ? "bg-green-500" : "bg-red-500"} py-2 px-4 text-white rounded-lg my-2`}>
-                {error.message}
             </div>
             <button
                 type="submit"

@@ -1,15 +1,37 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from '../context/AuthOnChange'
+import { Navigate } from 'react-router-dom';
 import useToggle from '../hooks/useToggle'
 import { Register } from "../components"
-//const inputStyle = "px-4 py-2 rounded-lg w-full border hover:border-2 border-gray-200 hover:border-blue-500 focus:border-blue-500"
+import { authUserLogin } from "../config"
+import swal from 'sweetalert2';
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isToggle, onToggle] = useToggle()
 
-    const onSubmit = () => {
+    const context = useContext(AuthContext);
 
+    const onSubmit = (event) => {
+        event.preventDefault();
+        authUserLogin(email, password).then(() => {
+            swal.fire({
+                icon: "success",
+                title: "Successfully Login",
+                text: "You can Proceed by clicking the Ok button"
+            })
+        }).catch(error => {
+            swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: "It seems this account is not yet registed"
+            })
+        })
+    }
+
+    if (Object.keys(context).length > 0) {
+        return <Navigate to="/dashboard" />
     }
 
 
@@ -28,13 +50,15 @@ export default function Login() {
             >
                 <div className="w-full h-100">
                     <h1 className="text-xl md:text-2xl font-bold leading-tight mt-12">
-                        {isToggle ? "Welcome Back!" : "Registration Form"}
+                        {isToggle ? "Registration Form" : "Welcome Back!"}
                     </h1>
                     <p className="text-gray-400">
 
                         Dont forget to put your password to proceed
                     </p>
                     {isToggle ? (
+                        <Register />
+                    ) : (
                         <form onSubmit={onSubmit} className="mt-6">
                             <div>
                                 <label className="block text-gray-700">Email Address</label>
@@ -54,7 +78,7 @@ export default function Login() {
                                     placeholder="Enter Password"
                                     minLength={6}
                                     className="w-full px-4 py-3 rounded-lg bg-gray-100 mt-2 border focus:border-blue-500
-               focus:bg-white focus:outline-none"
+           focus:bg-white focus:outline-none"
                                     required
                                 />
                             </div>
@@ -66,23 +90,21 @@ export default function Login() {
                             <button
                                 type="submit"
                                 className="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
-             px-4 py-3 mt-6"
+         px-4 py-3 mt-6"
                             >
                                 Log In
                             </button>
                         </form>
-                    ) : (
-                        <Register />
                     )}
                     <hr className="my-6 border-gray-300 w-full" />
                     <p className="mt-8">
-                        {isToggle && "Need an account? "}
+                        {!isToggle && "Need an account? "}
                         <button
                             onClick={onToggle}
                             type="button"
                             className="text-blue-500 hover:text-blue-700 font-semibold"
                         >
-                            {isToggle ? "Create an account" : "Back to Login"}
+                            {isToggle ? "Back to Login" : "Create an account"}
                         </button>
                     </p>
                 </div>

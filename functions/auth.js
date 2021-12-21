@@ -13,8 +13,35 @@ const insertDetails = (uid, email, fullName, password) => {
   );
 };
 
+const loginUser = async (event, callback) => {
+  try {
+    const { email, password } = JSON.parse(event.body);
+
+    //console.log({ email, password });
+
+    const { user } = await firebaseAuth.signInWithEmailAndPassword(
+      email,
+      password
+    );
+    const customToken = await firebaseAuth.createCustomToken(user.uid);
+    return callback(null, {
+      statusCode: 200,
+      body: JSON.stringify(customToken),
+    });
+  } catch (error) {
+    return callback(null, {
+      statusCode: 405,
+      body: JSON.stringify("ERROR 405 Something went wrong :("),
+    });
+  }
+};
+
 exports.handler = async (event, context, callback) => {
   try {
+    if (event.queryStringParameters["name"] === "login") {
+      return await loginUser(event, callback);
+    }
+
     if (event.httpMethod === "POST") {
       const { fullName, email, password } = JSON.parse(event.body);
 
