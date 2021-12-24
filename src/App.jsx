@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthOnChange'
 import { lazy, Suspense } from 'react';
 const Login = lazy(() => import("./pages/Login"))
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Appointments = lazy(() => import("./pages/Appointments"))
 const PrivateRoute = lazy(() => import("./components/Layout/PriveRoute"))
 
 function App() {
@@ -12,8 +13,11 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/dashboard" element={<PrivateRoute />}>
+            <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/appointments" element={<Appointments />} />
             </Route>
           </Routes>
         </BrowserRouter>

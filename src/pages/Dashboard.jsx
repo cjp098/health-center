@@ -1,7 +1,7 @@
-import { signOutUser } from '../config'
+import { Layout } from '../components'
 
 export default function Dashboard() {
     return (
-        <div onClick={signOutUser}>Dashboard</div>
+        <Layout>Dashboard</Layout>
     )
 }
