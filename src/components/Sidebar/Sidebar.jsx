@@ -25,7 +25,7 @@ export default function Sidebar() {
         {
             id: 3,
             icons: <Users className={iconStyle} />,
-            path: "/users"
+            path: "/staff"
         },
         {
             id: 4,

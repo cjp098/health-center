@@ -20,7 +20,7 @@ class AuthProvider extends React.Component {
             if (user) {
                 this.setState({ authenticted: user });
             } else {
-                this.setState({ authenticted: {} });
+                this.setState({ authenticted: null });
             }
         });
     };

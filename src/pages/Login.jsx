@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from '../context/AuthOnChange'
-import { Navigate } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import useToggle from '../hooks/useToggle'
 import { Register } from "../components"
 import { authUserLogin } from "../config"
@@ -30,8 +30,8 @@ export default function Login() {
         })
     }
 
-    if (Object.keys(context).length > 0) {
-        return <Navigate to="/dashboard" />
+    if (context) {
+        return <Redirect to="/dashboard" />
     }
 
 

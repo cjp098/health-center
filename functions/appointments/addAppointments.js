@@ -3,9 +3,8 @@ const { firebaseDb } = require("../firebaseAdmin");
 
 module.exports = async (event) => {
   try {
-    const { fullname, email, contact, address, schedule } = JSON.parse(
-      event.body
-    );
+    const { fullname, email, contact, address, dateSchedule, time } =
+      JSON.parse(event.body);
 
     const document = firebaseDb.collection("appointments").doc();
 
@@ -14,7 +13,8 @@ module.exports = async (event) => {
       email,
       contact,
       address,
-      schedule,
+      schedule: dateSchedule,
+      time: time,
       date_created: new Date(),
     });
 

@@ -1,11 +1,27 @@
-import { useContext } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Redirect } from "react-router-dom";
 import { AuthContext } from "../../context/AuthOnChange";
+import { Layout } from '../';
 
-export default function PrivateRoute() {
-    const isAuthenticated = useContext(AuthContext);
+const PrivateRoute = ({
+    component: RouteComponent,
+    path,
+    title
+}) => {
+    const context = useContext(AuthContext);
 
-    const isCheck = Object.keys(isAuthenticated);
 
-    return isCheck.length > 0 ? <Outlet /> : <Navigate to="/" />;
-}
+    const routeComponent = (props) => {
+        return context ? (
+            <Layout key="isAuthenticated" title={title}>
+                {React.createElement(RouteComponent, props)}
+            </Layout>
+        ) : (
+            <Redirect to="/" />
+        );
+    };
+
+    return <Route {...path} render={routeComponent} />;
+};
+
+export default PrivateRoute;
