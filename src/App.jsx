@@ -11,6 +11,8 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Appointments = lazy(() => import("./pages/Appointments"))
 const Patients = lazy(() => import("./pages/Patients"))
 const Staff = lazy(() => import("./pages/Staff"))
+const StaffInformation = lazy(() => import("./pages/StaffInformation"));
+const UpdateStaff = lazy(() => import("./pages/UpdateStaff"));
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
             <PrivateRoute exact path="/appointments" title="Appointments" component={Appointments} />
             <PrivateRoute exact path="/staff" title="Staff Management" component={Staff} />
             <PrivateRoute exact path="/patients" title="Patients Management" component={Patients} />
+            <PrivateRoute exact path="/staff-info" title="Staff Information" component={StaffInformation} />
+            <PrivateRoute exact path="/updateStaff" title="Update Staff Information" component={UpdateStaff} />
           </Switch>
         </Router>
       </AuthProvider>

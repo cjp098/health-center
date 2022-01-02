@@ -1,8 +1,8 @@
 //* getData slice with by 5 on each row
-export const arraySlice = (filteredProduct, current, dataShowed) => {
+export const arraySlice = (data, current, dataShowed) => {
     const indexLastData = current * dataShowed;
     const indexOfFirstData = indexLastData - dataShowed;
-    const currentData = filteredProduct.slice(indexOfFirstData, indexLastData);
+    const currentData = data.slice(indexOfFirstData, indexLastData);
 
     return currentData;
 };

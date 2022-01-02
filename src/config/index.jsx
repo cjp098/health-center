@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import {
     getAuth,
     signInWithEmailAndPassword,
-    onAuthStateChanged,
+    onAuthStateChanged
 } from "firebase/auth";
 
 const {

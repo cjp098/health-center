@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Drawer, AdminTable } from "../components";
-import { PlusCircle, RefreshCcw, Trash2, Mail } from "react-feather";
+import { PlusCircle, RefreshCcw, Trash2, Mail, UserCheck } from "react-feather";
 import useToggle from "../hooks/useToggle";
 import PhoneInput from "react-phone-input-2";
 import httpRequest from "../api";
@@ -137,12 +137,6 @@ export default function Appointments() {
 
     const columns = [
         {
-            title: "unique Identification",
-            dataIndex: "id",
-            key: "id",
-            render: (id) => <span className="text-blue-500">{id}</span>,
-        },
-        {
             title: "Email",
             dataIndex: "email",
             key: "email",
@@ -192,6 +186,7 @@ export default function Appointments() {
             key: "action",
             render: (appointments) => (
                 <Space size="middle" key="action">
+                    {/** Email Patients */}
                     <Popconfirm
                         title="would you like to continue?"
                         onConfirm={(event) => MailRecipient(event, appointments.email)}
@@ -202,12 +197,25 @@ export default function Appointments() {
                             id="update"
                         />
                     </Popconfirm>
+
+                    {/**Delete Appointments */}
                     <Popconfirm
                         title="would you like to continue?"
                         onConfirm={(event) => onDeleteData(event, appointments.id)}
                     >
                         <Trash2
                             className="text-red-500 cursor-pointer"
+                            size="20"
+                            id="update"
+                        />
+                    </Popconfirm>
+
+                    {/**Add to patients area */}
+                    <Popconfirm
+                        title="would you like to continue?"
+                    >
+                        <UserCheck
+                            className="text-green-500 cursor-pointer"
                             size="20"
                             id="update"
                         />

@@ -18,7 +18,12 @@ class AuthProvider extends React.Component {
     isAuthenticated = () => {
         onAuthStateChanged(firebaseAuth, (user) => {
             if (user) {
-                this.setState({ authenticted: user });
+
+                user.getIdTokenResult().then((idTokenResult) => {
+                    user.admin = idTokenResult.claims.admin
+                    this.setState({ authenticted: user });
+                })
+
             } else {
                 this.setState({ authenticted: null });
             }
