@@ -15,3 +15,10 @@ export const onSearch = (value, items) => {
         });
     });
 };
+
+
+export const filterDiagnosis = (response, id) => {
+    return response.data.filter((obj) => {
+        return id === obj.patientId
+    })
+}

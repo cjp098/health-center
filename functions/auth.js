@@ -83,7 +83,7 @@ exports.handler = async (event, context, callback) => {
         .createUser({
           email: config.email,
           password: config.password,
-          displayName: fullName,
+          displayName: config.username,
           emailVerified: true,
           disabled: false,
         })

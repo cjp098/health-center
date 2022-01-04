@@ -2,7 +2,8 @@ import { initializeApp } from "firebase/app";
 import {
     getAuth,
     signInWithEmailAndPassword,
-    onAuthStateChanged
+    onAuthStateChanged,
+    sendPasswordResetEmail
 } from "firebase/auth";
 
 const {
@@ -34,4 +35,10 @@ const authUserLogin = async (email, password) => {
     return signInWithEmailAndPassword(firebaseAuth, email, password);
 }
 
-export { authUserLogin, firebaseAuth, signOutUser, onAuthStateChanged }
+export {
+    authUserLogin,
+    firebaseAuth,
+    signOutUser,
+    onAuthStateChanged,
+    sendPasswordResetEmail,
+};

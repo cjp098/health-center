@@ -5,3 +5,4 @@ export { default as Drawer } from './Drawer/Drawer'
 export { default as AdminTable } from './Table/AdminTable'
 export { default as Back } from './Back/Back';
 export { default as FormLayout } from './FormLayout/FormLayout'
+export { default as DashboardCards } from './DashboardCards/DashboardCards'

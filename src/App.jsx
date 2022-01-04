@@ -16,6 +16,8 @@ const StaffInformation = lazy(() => import("./pages/StaffInformation"));
 const UpdateStaff = lazy(() => import("./pages/UpdateStaff"));
 const UpdatePatient = lazy(() => import("./pages/UpdatePatient"))
 const Complaints = lazy(() => import("./pages/Complaints"));
+const StaffPatientRecord = lazy(() => import("./pages/StaffPatientRecord"));
+const PatientsRecord = lazy(() => import("./pages/PatientsRecord"));
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
             <PrivateRoute exact path="/patients-information" title="Patients Information" component={PatientsInformation} />
             <PrivateRoute exact path="/complaints" title="Complaints" component={Complaints} />
             <PrivateRoute exact path="/updatePatient" title="Update Patient Information" component={UpdatePatient} />
+            <PrivateRoute exact path="/patient-record" title="Patients Record" component={StaffPatientRecord} />
+            <PrivateRoute exact path="/viewing-record" title="Viewing patients record" component={PatientsRecord} />
           </Switch>
         </Router>
       </AuthProvider>

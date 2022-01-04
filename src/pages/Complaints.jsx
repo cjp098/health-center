@@ -4,6 +4,7 @@ import { Divider } from "antd";
 import httpRequest from "../api";
 import swal from 'sweetalert2';
 import useToggle from '../hooks/useToggle'
+import { filterDiagnosis } from '../utils/ReusableSyntax'
 import { ChevronRight, X, Check } from 'react-feather';
 
 const initialState = {
@@ -78,24 +79,16 @@ export default function Complaints({ location }) {
 
     useEffect(httpEndpoint, []);
 
-    const filterDiagnosis = (response) => {
-        return response.data.filter((obj) => {
-            return id === obj.patientId
-        })
-    }
-
     const diagnosisEndpoints = async () => {
 
         await httpRequest
             .get("/.netlify/functions/diagnosis")
             .then((response) => {
-                const data = filterDiagnosis(response)
+                const data = filterDiagnosis(response, id)
                 setData(data)
             });
     }
 
-
-    console.log(data)
 
     useEffect(diagnosisEndpoints, []);
 
