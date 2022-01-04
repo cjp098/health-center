@@ -1,98 +1,103 @@
-import { useState } from "react";
-import { FormLayout } from "../components";
+import { useState, useEffect } from "react";
+import { Back } from "../components";
 import { Divider } from "antd";
-import httpRequest from "../api";
-import swal from "sweetalert2";
+import httpRequest from '../api';
+import swal from 'sweetalert2'
+///.netlify/functions/fetchPatients
 
 const initialState = {
-    //**Personal Information */
     firstname: "",
     lastname: "",
     middlename: "",
     userGender: "",
-    dateOfBirth: "",
-
-    //**Account Information */
-    email: "",
-    username: "",
-    password: "",
-
-    //**Location Information */
     address: "",
-    province: "",
-    zipcode: "",
+    userCivilStatus: "",
+    dateOfBirth: "",
+    bloodPressure: "",
+    temperature: "",
+    weight: "",
+    height: "",
+    age: 0,
 };
 
-export default function StaffInformation() {
+export default function UpdatePatient({ location }) {
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
     const [
         {
             firstname,
             lastname,
             middlename,
             userGender,
-            dateOfBirth,
-            email,
-            username,
-            password,
             address,
-            province,
-            zipcode,
+            userCivilStatus,
+            dateOfBirth,
+            bloodPressure,
+            temperature,
+            weight,
+            height,
+            age,
         },
         setState,
     ] = useState(initialState);
 
     const onChange = (event) => {
         event.preventDefault();
-        const { name, value } = event.target;
-        setState((prevState) => ({ ...prevState, [name]: value }));
-    };
 
-    const clearState = () => setState({ ...initialState });
+        const { name, value } = event.target;
+
+        setState((prevState) => ({ ...prevState, [name]: value }))
+    }
 
     const onSubmit = async (event) => {
         event.preventDefault();
 
         const config = {
+            id,
             firstname,
             lastname,
             middlename,
             userGender,
-            dateOfBirth,
-            email,
-            username,
-            password,
             address,
-            province,
-            zipcode,
-            isAdmin: false
-        };
+            userCivilStatus,
+            dateOfBirth,
+            bloodPressure,
+            temperature,
+            weight,
+            height,
+            age
+        }
 
-        await httpRequest
-            .post("/.netlify/functions/auth", config)
-            .then((response) => {
-                swal.fire({
-                    icon: "success",
-                    title: "YAY!",
-                    text: response.data,
-                });
-                clearState();
+        await httpRequest.post("/.netlify/functions/patients?name=updatePatient", config).then((response) => {
+            swal.fire({
+                icon: "success",
+                title: "YAY!",
+                text: response.data
             })
-            .catch((error) => {
-                swal.fire({
-                    icon: "warning",
-                    title: "Something is wrong :(",
-                    text: error.data,
-                });
-            });
-    };
+        }).catch((error) => {
+            swal.fire({
+                icon: "warning",
+                title: "Ohh nooo :(",
+                text: "Something is wrong"
+            })
+        })
+    }
+
+    const httpEndpoint = async () => {
+        await httpRequest.post("/.netlify/functions/fetchPatients?name=getPatientsInfo", { id }).then((response) => {
+            setState({ ...response.data });
+        })
+    }
+
+    useEffect(httpEndpoint, []);
 
     const gender = ["Male", "Female"];
+    const civilStatus = ["Single", "Married"];
 
     const form = (
-        <form
-            onSubmit={onSubmit}
-            className="shadow-xl bg-white rounded-lg p-10 max-w-4xl mx-auto transform -translate-y-12"
-        >
+        <form onSubmit={onSubmit} className="shadow-xl bg-white rounded-lg p-10 max-w-4xl mx-auto transform -translate-y-12">
             <section>
                 <h1 className="font-bold text-2xl py-1 pb-4 text-gray-300">
                     Personal Information
@@ -153,6 +158,22 @@ export default function StaffInformation() {
                         </select>
                     </div>
                     <div>
+                        <label className="block text-gray-700 mb-2">Civil Status</label>
+                        <select
+                            name="userCivilStatus"
+                            value={userCivilStatus}
+                            onChange={(event) => onChange(event)}
+                            className="block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
+                            <option value=""></option>
+                            {civilStatus.map((status, index) => (
+                                <option key={index} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
                         <label className="block text-gray-700">Date of Birth</label>
                         <input
                             type="date"
@@ -164,89 +185,75 @@ export default function StaffInformation() {
                         />
                     </div>
                 </div>
-            </section>
-            <Divider />
-            <section>
-                <h1 className="font-bold text-2xl pb-4 text-gray-300">
-                    Account Information
-                </h1>
-                <div className="grid grid-cols-3 gap-4 ">
-                    <div>
-                        <label className="block text-gray-700">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={email}
-                            onChange={(event) => onChange(event)}
-                            placeholder="Email..."
-                            className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={username}
-                            onChange={(event) => onChange(event)}
-                            placeholder="Username..."
-                            className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={password}
-                            onChange={(event) => onChange(event)}
-                            placeholder="Password..."
-                            className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                            required
-                        />
-                    </div>
+
+                <div className="mt-4">
+                    <label className="block text-gray-700">Address</label>
+                    <textarea required name="address" value={address} className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" name="address" rows="4" cols="50">
+                    </textarea>
                 </div>
             </section>
             <Divider />
             <section>
                 <h1 className="font-bold text-2xl pb-4 text-gray-300">
-                    Location Information
+                    Hospital Information
                 </h1>
                 <div className="grid grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-gray-700">Address</label>
+                        <label className="block text-gray-700">Blood Pressure</label>
                         <input
                             type="text"
-                            name="address"
-                            value={address}
+                            name="bloodPressure"
+                            value={bloodPressure}
                             onChange={(event) => onChange(event)}
-                            placeholder="Address..."
+                            placeholder="Blood Pressure"
                             className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700">Province</label>
+                        <label className="block text-gray-700">Temperature</label>
                         <input
                             type="text"
-                            name="province"
-                            value={province}
+                            name="temperature"
+                            value={temperature}
                             onChange={(event) => onChange(event)}
-                            placeholder="Province..."
+                            placeholder="Temperature"
                             className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-gray-700">Zipcode</label>
+                        <label className="block text-gray-700">Weight</label>
                         <input
                             type="text"
-                            name="zipcode"
-                            value={zipcode}
+                            name="weight"
+                            value={weight}
                             onChange={(event) => onChange(event)}
-                            placeholder="Zipcode..."
+                            placeholder="Weight..."
+                            className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Height</label>
+                        <input
+                            type="text"
+                            name="height"
+                            value={height}
+                            onChange={(event) => onChange(event)}
+                            placeholder="Height..."
+                            className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Age</label>
+                        <input
+                            type="number"
+                            name="age"
+                            value={age}
+                            onChange={(event) => onChange(event)}
+                            placeholder="Height..."
                             className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
                             required
                         />
@@ -271,8 +278,14 @@ export default function StaffInformation() {
     );
 
     return (
-        <FormLayout redirect="/staff">
+        <div>
+            <Back redirect="/patients" />
+            <img
+                className="h-60 mt-5 rounded-lg w-full object-cover"
+                src="/images/patients-abstract.jpg"
+                alt="profile"
+            />
             {form}
-        </FormLayout>
+        </div>
     );
 }

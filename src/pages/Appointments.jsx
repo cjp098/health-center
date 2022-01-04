@@ -7,11 +7,15 @@ import httpRequest from "../api";
 import swal from "sweetalert2";
 import { Tag, Input, Popconfirm, Space } from "antd";
 import { arraySlice, onSearch } from '../utils/ReusableSyntax'
+import { useHistory, withRouter } from 'react-router-dom';
 
 const initialState = {
-    fullname: "",
+    firstname: "",
+    lastname: "",
+    middlename: "",
     email: "",
     address: "",
+    userGender: "",
     dateSchedule: "",
 };
 
@@ -29,15 +33,16 @@ const inputStyle = {
     padding: "20px 0",
 };
 
-export default function Appointments() {
+function Appointments() {
     //const dateToday = new Date().toISOString().substring(0, 10);
-    const [{ fullname, email, address, dateSchedule }, setState] =
+    const [{ firstname, lastname, middlename, email, address, userGender, dateSchedule }, setState] =
         useState(initialState);
     const [time, getTime] = useState("");
     const [data, setData] = useState([]);
     const [contact, setContact] = useState("+63");
     const [current, setCurrent] = useState(1);
     const [searchFilter, setSearchFilter] = useState(null);
+    const history = useHistory();
 
     const [isToggle, onToggle] = useToggle();
 
@@ -70,21 +75,24 @@ export default function Appointments() {
     }
 
     const clearState = () => setState({ ...initialState });
+
     const onSubmit = (event) => {
         event.preventDefault();
 
         const time = onTimeChange()
 
         const config = {
-            fullname,
+            firstname,
+            lastname,
+            middlename,
             email,
             contact,
             address,
+            userGender,
             dateSchedule,
-            time
+            time,
+            isAppointment: true
         };
-
-        console.log(config);
 
         httpRequest
             .post(
@@ -135,6 +143,12 @@ export default function Appointments() {
         window.open(`https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${email}&tf=1`)
     };
 
+    const PatientsInformation = (event, id) => {
+        event.preventDefault();
+
+        history.push(`/patients-information?id=${id}`)
+    }
+
     const columns = [
         {
             title: "Email",
@@ -143,8 +157,10 @@ export default function Appointments() {
         },
         {
             title: "Fullname",
-            dataIndex: "fullname",
             key: "fullname",
+            render: (info) => (
+                <span>{`${info.firstname} ${info.middlename} ${info.lastname}`}</span>
+            )
         },
         {
             title: "Address",
@@ -157,21 +173,12 @@ export default function Appointments() {
             key: "contact",
         },
         {
-            title: "Date Created",
-            dataIndex: "date_created",
-            key: "date_created",
-            render: (date_created) => (
-                <Tag color="geekblue">
-                    {new Date(date_created._seconds * 1000)
-                        .toISOString()
-                        .substring(0, 10)}
-                </Tag>
-            ),
-        },
-        {
             title: "Schedule",
-            dataIndex: "schedule",
-            key: "schedule",
+            dataIndex: "dateSchedule",
+            key: "dateSchedule",
+            render: (dateSchedule) => (
+                <Tag color="geekblue">{dateSchedule}</Tag>
+            )
         },
         {
             title: "Time",
@@ -213,6 +220,7 @@ export default function Appointments() {
                     {/**Add to patients area */}
                     <Popconfirm
                         title="would you like to continue?"
+                        onConfirm={(event) => PatientsInformation(event, appointments.id)}
                     >
                         <UserCheck
                             className="text-green-500 cursor-pointer"
@@ -228,6 +236,8 @@ export default function Appointments() {
     //** Data showed to the client
     const dataShowed = 5;
     const currentData = arraySlice(data, current, dataShowed);
+
+    const gender = ["Male", "Female"]
 
     ///.netlify/functions/appointments?appointmentParams=addAppointment
 
@@ -287,16 +297,42 @@ export default function Appointments() {
                 <form onSubmit={onSubmit}>
                     <div>
                         <div>
-                            <label className="block text-gray-700">Fullname</label>
-                            <input
-                                type="text"
-                                value={fullname}
-                                name="fullname"
-                                onChange={(event) => onChange(event)}
-                                placeholder="Enter Fullname..."
-                                className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                required
-                            />
+                            <div>
+                                <label className="block text-gray-700">Firstname</label>
+                                <input
+                                    type="text"
+                                    value={firstname}
+                                    name="firstname"
+                                    onChange={(event) => onChange(event)}
+                                    placeholder="Enter Firstname..."
+                                    className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mt-4">Lastname</label>
+                                <input
+                                    type="text"
+                                    value={lastname}
+                                    name="lastname"
+                                    onChange={(event) => onChange(event)}
+                                    placeholder="Enter Lastname..."
+                                    className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mt-4">Middlename</label>
+                                <input
+                                    type="text"
+                                    value={middlename}
+                                    name="middlename"
+                                    onChange={(event) => onChange(event)}
+                                    placeholder="Enter Middlename..."
+                                    className="w-full px-4 py-2 rounded-sm bg-gray-100 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                    required
+                                />
+                            </div>
                         </div>
                         <div className="mt-4">
                             <label className="block text-gray-700">Email</label>
@@ -342,6 +378,21 @@ export default function Appointments() {
                             />
                         </div>
                         <div className="mt-4">
+                            <label className="block text-gray-700 mb-2">Gender</label>
+                            <select
+                                name="userGender"
+                                onChange={(event) => onChange(event)}
+                                className="block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            >
+                                <option value=""></option>
+                                {gender.map((gender, index) => (
+                                    <option key={index} value={gender}>
+                                        {gender}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="mt-4">
                             <label className="block text-gray-700">Date schedule</label>
                             <input
                                 type="date"
@@ -376,3 +427,5 @@ export default function Appointments() {
         </section>
     );
 }
+
+export default withRouter(Appointments);

@@ -37,9 +37,11 @@ const loginUser = async (event, callback) => {
 
 const deleteUser = async (event, callback) => {
   try {
-    const { id } = JSON.parse(event.body);
+    const { id, uid } = JSON.parse(event.body);
 
     const document = firebaseDb.collection("user").doc(id);
+
+    await firebaseAuth.deleteUser(uid);
 
     await document.delete();
 
@@ -76,8 +78,6 @@ exports.handler = async (event, context, callback) => {
 
       const fullName =
         config.firstname + " " + config.middlename + " " + config.lastname;
-
-      //console.log(email, password);
 
       await firebaseAuth
         .createUser({

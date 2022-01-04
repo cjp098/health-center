@@ -5,6 +5,7 @@ export default function Dashboard() {
 
     const context = useContext(AuthContext);
 
+
     return (
         <div>Dashboard</div>
     )

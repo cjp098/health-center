@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, RefreshCcw, User, UserCheck } from 'react-feather';
+import { PlusCircle, RefreshCcw, User } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { Trash2, Edit } from 'react-feather';
 import { Tag, Space, Popconfirm, Input } from 'antd';
@@ -23,14 +23,16 @@ function Staff() {
         history.push(`/updateStaff?id=${id}`)
     }
 
-    const deleteUser = async (event, id) => {
+    const deleteUser = async (event, id, uid) => {
         event.preventDefault();
 
-        await httpRequest.post("/.netlify/functions/auth?name=delete", { id }).then((response) => {
+        await httpRequest.post("/.netlify/functions/auth?name=delete", { id, uid }).then((response) => {
             swal.fire({
                 icon: "success",
                 title: "YAY",
                 text: response.data
+            }).then(() => {
+                window.location.reload();
             })
         })
     }
@@ -132,7 +134,7 @@ function Staff() {
                         {/**Delete Staff */}
                         <Popconfirm
                             title="would you like to delete this user?"
-                            onConfirm={(event) => deleteUser(event, staff.id)}
+                            onConfirm={(event) => deleteUser(event, staff.id, staff.uid)}
                         >
                             <Trash2
                                 className="text-red-500 cursor-pointer"

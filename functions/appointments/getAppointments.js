@@ -3,7 +3,9 @@ const { firebaseDb } = require("../firebaseAdmin");
 
 module.exports = async () => {
   try {
-    const document = firebaseDb.collection("appointments");
+    const document = firebaseDb
+      .collection("appointments")
+      .where("isAppointment", "==", true);
 
     const getDocument = await document.get();
     const data = getDocument.docs.map((doc) => {

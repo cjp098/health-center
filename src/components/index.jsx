@@ -4,3 +4,4 @@ export { default as Sidebar } from './Sidebar/Sidebar'
 export { default as Drawer } from './Drawer/Drawer'
 export { default as AdminTable } from './Table/AdminTable'
 export { default as Back } from './Back/Back';
+export { default as FormLayout } from './FormLayout/FormLayout'
